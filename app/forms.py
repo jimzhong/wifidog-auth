@@ -16,7 +16,7 @@ class LoginForm(Form):
 
 class RegisterForm(Form):
     studentid = StringField('Student ID', validators=[Required(), Length(6, 10)])
-    password = PasswordField('Password of ZU Passport', validators=[Required(), Length(6, 32)])
+    password = PasswordField('Password', validators=[Required(), Length(6, 32)])
     submit = SubmitField("Sign up")
 
 
