@@ -1,0 +1,147 @@
+{% extends "bootstrap/base.html" %}
+{% block title %}Dashboard{% endblock %}
+
+{% include "navbar.html" %}
+
+{% block content %}
+
+{% include "flash.html" %}
+
+<div class="container">
+    <div id="chart" style="min-width:600px;height:400px"></div>
+</div>
+
+<div class="container">
+    <div class="center-block">
+        <p><span id='data_usage'></span>MB of <span id='quota'></span>MB used</p>
+    </div>
+    <table class="table table-striped table-bordered">
+        <thead>
+            <tr>
+                <td>Start</td>
+                <td>End</td>
+                <td>MAC Address</td>
+                <td>Upload(MBytes)</td>
+                <td>Download(MBytes)</td>
+            </tr>
+        </thead>
+        <tbody>
+            {% for l in logs %}
+                <tr>
+                    <td>{{ l.start_time_string }}</td>
+                    <td>{{ l.stop_time_string }}
+                    {% if l.valid %}
+                        <button onclick="location.href='{{ url_for("disconnect", uid=current_user.uid) }}';">Disconnect</button>
+                    {% endif %}
+                    </td>
+                    <td>{{ l.mac }}</td>
+                    <td>{{ l.outgoing }}</td>
+                    <td>{{ l.incoming }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <p id="update" class="text-muted text-right"></p>
+</div>
+
+{% include "footer.html" %}
+
+{% endblock %}
+
+{% block scripts %}
+
+{{ super() }}
+<script src="{{ url_for('static', filename='js/highcharts.js') }}"></script>
+
+<script>
+
+function update_stat() {
+    $("#update").html("Updated at " + Date())
+    $.getJSON("{{url_for("api_stat")}}", function(data)
+    {
+        //console.log(data)
+        $("#data_usage").html(data.data_usage);
+        $("#quota").html(data.quota);
+        setTimeout(update_stat, 1000*35);
+    })
+}
+
+$(document).ready(update_stat)
+
+var chart;
+var current_logid;
+
+/**
+ * Request data from the server, add it to the graph and set a timeout to request again
+ */
+function requestData() {
+    $.getJSON(
+        "{{url_for("api_chart")}}",
+        function(data)
+        {
+            now = new Date();
+            day = now.getDate();
+            // day = 31;
+            var download = [];
+            var upload = [];
+            for(i = 0;i < day;i++)
+            {
+                download.push(0);
+                upload.push(0);
+            }
+            //console.log(download)
+            for(i = 0; i < data.length; i++)
+            {
+                //console.log(data[i])
+                upload[data[i][1] - 1] += data[i][3]
+                download[data[i][1] - 1] += data[i][2]
+            }
+            //console.log(chart.series)
+            // for(i = 1; i <= day; i++)
+            // {
+            //     chart.series[0].addPoint([i, download[i]])
+            //     chart.series[1].addPoint([i, upload[i]])
+            // }
+            chart.series[0].setData(download)
+            chart.series[1].setData(upload)
+            //chart.redraw()
+            setTimeout(requestData, 40*1000);
+        }
+    );
+}
+    
+$(document).ready(function() {
+    chart = new Highcharts.Chart({
+        chart: {
+            renderTo: 'chart',
+            defaultSeriesType: 'column',
+            events: {
+                load: requestData
+            }
+        },
+        title: {
+            text: 'Data Usage in this Month'
+        },
+        xAxis: {
+            type: 'linear'
+        },
+        yAxis: {
+            title: {
+                text: 'MBytes'                  //指定y轴的标题
+            }
+        },
+        series: [
+        {                         
+            name: 'Download',
+            pointStart: 1,
+        },
+        {
+            pointStart: 1,
+            name: 'Upload',
+        }]
+    });     
+});
+
+
+</script>
+{% endblock %}

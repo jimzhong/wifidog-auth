@@ -1,0 +1,29 @@
+{% extends "bootstrap/base.html" %}
+{% block title %}Dashboard{% endblock %}
+
+{% include "navbar.html" %}
+
+{% block content %}
+
+<div class="container">
+    <table class="table">
+        <tr>
+            <td>Username</td>
+            <td>{{ user.username }}</td>
+        </tr>
+        <tr>
+            <td>Email</td>
+            <td>{{ user.email }}</td>
+        </tr>
+        <tr>
+            <td>Join time</td>
+            <td>{{ user.join_time }}</td>
+        </tr>
+        <tr>
+            <td>Admin</td>
+            <td>{{ user.is_admin }}</td>
+        </tr>
+    </table>
+</div>
+
+{% endblock %}

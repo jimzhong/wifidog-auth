@@ -1,0 +1,25 @@
+{% extends "bootstrap/base.html" %}
+{% block title %}Message{% endblock %}
+
+{% block navbar %}
+<nav class="navbar navbar-inverse">
+    <div class="container">
+        <div class="navbar-header">
+            <p class="navbar-brand">LOL WiFi Portal</p>
+        </div>
+        <div>
+        <ul class="nav navbar-nav">
+            <li><a href={{ url_for("login") }}>Log in</a></li>
+        </ul>
+        </div>
+    </div>
+</nav>
+{% endblock %}
+
+{% block content %}
+
+{% include "flash.html" %}
+
+{% include "footer.html" %}
+
+{% endblock %}

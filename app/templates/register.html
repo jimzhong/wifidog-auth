@@ -1,0 +1,47 @@
+{% extends "bootstrap/base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block title %}Sign up{% endblock %}
+
+{% block navbar %}
+<div class="navbar navbar-inverse" role="navigation">
+    <div class="container">
+        <div class="navbar-header">
+            <p class="navbar-brand">LOL WiFi Portal</p>
+        </div>
+<!--         <div class="navbar-collapse collapse">
+            <ul class="nav navbar-nav">
+                <li><a href="/logout">Logout</a></li>
+            </ul>
+        </div> -->
+    </div>
+</div>
+{% endblock %}
+
+{% block content %}
+
+<div class="container">
+
+<div class="panel panel-primary">
+    <div class="panel-heading"><b>You agree to these terms by signing up</b></div>
+    <div class="panel-body" style='font-family: Arial'>
+        You should sign up with your own ZU Passport.<br>
+        Free user has a monthly quota of 2GB.<br>You should not do P2P download.<br>
+        You should not hinder other users.<br>
+        You should do nothing that violates the laws and regulations of P.R.C.<br>
+        I may disable your account if you violate these terms.<br>
+        For free users, I can stop the service at any time I like.
+    </div>
+</div>
+
+<div class="container">
+
+{{ wtf.quick_form(form) }}
+
+</div>
+
+{% include "flash.html" %}
+
+{% include "footer.html" %}
+
+{% endblock %}

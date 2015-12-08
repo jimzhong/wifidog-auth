@@ -1,0 +1,18 @@
+{% extends "bootstrap/base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block title %}Change Password{% endblock %}
+
+{% include "navbar.html" %}
+
+{% block content %}
+
+<div class="container">
+{{ wtf.quick_form(form) }}
+</div>
+
+{% include "flash.html" %}
+
+{% include "footer.html" %}
+
+{% endblock %}
